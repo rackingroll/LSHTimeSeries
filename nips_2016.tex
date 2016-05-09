@@ -20,11 +20,12 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
+\usepackage[]{algorithm2e}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 
-\title{Fast Time Series Similarity Search Framework using Locality Sensitive Hashing Schema}
+\title{LSHTS:~A Fast Time Series Similarity Search Framework using Locality Sensitive Hashing}
 
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
@@ -126,46 +127,70 @@ Second paragraph introduce the some top-k similarity search related works in thi
 Third paragraph introduce the LSH methods.
 
 
-\section{Our Framework}
+\section{LSHTS Framework}
+In this section, we introduce the LSHTS framework in details. Our framework two steps. First step is to transfer a time series into a set using sliding and n-gram.
+Then using weghted min-hash to do fast nearest neighbor search.
 
+\subsection {Time Series sliding}
+
+\subsection {N-gram}
+
+\subsection {Weighted Minhash}
+
+\begin{algorithm}[h]
+	\KwData{Vector $x$, and random seed[][]}
+	\KwResult{Hash Pairs}
+	initialization $i=0$\;
+	\For{$i$ to k}{
+		\For{Iteration over $x_i$}
+		{
+			random seeds = seed[i][j]\;
+			sample $r_{i,j}$ and $c_{i,j}$ \~ Gamma(2,1)\;
+			sample $\beta_{i,j}$ \~ Gamma(0,1)\;
+			$t_j=|\frac{\log x_i}{r_{i,j}}+\beta_{i,j}|$\;
+			$y_i=exp(r_{i,j}(t_j-beta_{i,j}))$\;
+			$z_j=y_i*exp(r_{i,j})$\;
+			$a_j=c_{i,j}/z_j$
+			
+		}
+		$K^* = \arg\min_ja_i$\;
+		HashPairs[i]=($k^*,t_k^*$)
+	}
+	\caption{Weighted Minhash (CWS)}
+\end{algorithm}
+
+For more details of this algorithm, please refer to paper. \cite{ioffe2010improved}. 
+
+\subsection{Overall Framework}
 
 \section{Evaluation}
 
 \subsection{Dataset}
 
-\begin{figure}[h]
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
-
-\subsection{Tables}
-
-All tables must be centered, neat, clean and legible.  The table
-number and title always appear before the table.  See
-Table~\ref{sample-table}.
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-\begin{table}[t]
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule{1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+%\begin{figure}[h]
+%  \centering
+%  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+%  \caption{Sample figure caption.}
+%\end{figure}
+%
+%\subsection{Tables}
+%
+%\begin{table}[t]
+%  \caption{Sample table title}
+%  \label{sample-table}
+%  \centering
+%  \begin{tabular}{lll}
+%    \toprule
+%    \multicolumn{2}{c}{Part}                   \\
+%    \cmidrule{1-2}
+%    Name     & Description     & Size ($\mu$m) \\
+%    \midrule
+%    Dendrite & Input terminal  & $\sim$100     \\
+%    Axon     & Output terminal & $\sim$10      \\
+%    Soma     & Cell body       & up to $10^6$  \\
+%    \bottomrule
+%  \end{tabular}
+%\end{table}
 
 \subsubsection*{Acknowledgments}
 
