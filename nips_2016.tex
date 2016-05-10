@@ -21,6 +21,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage[]{algorithm2e}
+\usepackage[usenames, dvipsnames]{color}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
@@ -74,24 +75,49 @@
 \maketitle
 
 \begin{abstract}
-  Abstract!
+Similarity search problem on time series, as an important machine learning task, has to be fast and accuracy. Accuracy can be achieved by choosing right similarity metrics. 
+Dynamic time warping can deal with the time warping of time series, and is demonstrated the most effective similarity metrics for time series. However, due to the high complexity of dynamic time warping, fast similarity search using dynamic time warping is still and open problem. 
+
+Locality sensitive hashing (LSH) is demonstrated very effective in dealing with fast nearest neighbor search in sub-linear time. 
+So, in this paper, we design LSHTS, a time series search framework to make the time series similarity search sub-linear. 
+LSHTS can do fast nearest neighbor search in sub-linear time.
+The experiment on large time series benchmarks demonstrated the effectiveness and efficiency of LSHTS.
+
 \end{abstract}
 
 \section{Introduction}
 
-The focus of this paper will be on the time series data. A time series is defined as a sequence of values $\{x_1,x_2,...,x_m\}$
-associated with timestamps $\{t(x_1), t(x_2),..., t(x_m)\}$ that typically have the relationship of $t(x_i) = t(x_{i-1})+\tau$, where $\tau$ is  the sampling interval, and $m$ is the number of points in the time series. Time series mining is ubiquitous in data driven applications including robotics, medicine~\cite{oates2000method,caracca2000discovering}, speech~\cite{rabiner1993fundamentals}, object detection in vision~\cite{yang2002detecting, sonka2014image}, High Performance Computing (HPC) and system failure diagnosis~\cite{luo2014correlating,sun2014querying}, Earth Science \cite{mudelsee2013climate}, and Finance \cite{granger2014forecasting}, etc.
+The focus of this paper is on the problem of similarity search on time series data.
+Given a time series $X$, which is defined as a sequence of values $X = \{x_1,x_2,...,x_m\}$, associated with timestamps:$\{t(x_1), t(x_2),..., t(x_m)\}$ that typically have the relationship of $t(x_i) = t(x_{i-1})+\tau$, where $\tau$ is  the sampling interval, and $m$ is the number of points in the time series. Formally, we interested in efficiently computing
 
-Second paragraph introduce the importance of fast nearest neighbor search. And the limitation to handle the large scale data set.
+\begin{equation}
+X^* = \arg \max_{X \in D} S(X_q,X)
+\end{equation}
+where $S(X,Y)$ denote the similarity between time series $X$ and $Y$. 
 
-Third paragraph introduce the related works to handle the fast nearest neighbor search and the corresponding limitation. 
+Similarity search problem in time series data is ubiquitous in data driven applications including robotics,medicine~\cite{oates2000method,caracca2000discovering}, speech~\cite{rabiner1993fundamentals}, object detection in vision~\cite{yang2002detecting, sonka2014image}, High Performance Computing (HPC) and system failure diagnosis~\cite{luo2014correlating,sun2014querying}, Earth Science \cite{mudelsee2013climate}, and Finance \cite{granger2014forecasting}, etc. 
+{\color{Red} NEED TO ADD MORE APPLICATIONS HERE, CAN HAVE A LIST OF APPLICATIONS}
 
-Forth paragraph introduce our proposal. The overall introduction of our framework. 
+Similarity search problem, as an important machine learning task, has to be fast and accuracy \cite{kale2014examination}. Accuracy can be achieved by choosing right similarity metrics. Dynamic time warping \cite{rakthanmanon2012searching} is demonstrated as the best time series similarity method. However, because of the high complexity of dynamic time warping (DTW), fast similarity search using dynamic time warping is still and open problem. In \cite{rakthanmanon2012searching}, the authors introduces several time series sub-sequence search pruning strategies: the UCR Suite (including early abandoning strategies, lower bound, indexing, computation-reuse). The UCR suite can effectively is demonstrated very well in real world problems. UCR suite.
+However, DTW distance is quite high data dependency. so when dealing with very long time series queries, it still need to take long time, and also thoretically, the worst case of UCR suite similarity is still linear $O(n)$. As a result, 
+So, in this paper, we want to design a time series search framework to make the time series similarity search in sub-linear.
 
-Introduce the main contribution of our paper.
-1. We propose a new time series similarity search framework using locality sensitive hashing schema.
+We apply locality-sensitive hashing schema \cite{gionis1999similarity} to the problem of fast search for time series similarity search. In this paper, we design LSHTS, a time series similarity search framework using locality sensitive hashing schema. 
+In LSHTS, we combine both the UCR suit strategies (early abandoning strategies, lower bound, indexing, computation-reuse) and locality sensitive hashing schema to make time series searching much faster. The experiment on two large scale time series data shows the effectiveness and efficiency of LSHTS.
+{\color{Red} MODIFY HERE TO INTRODUCE MORE NUMBERS HERE}
 
-2. The experimental result shows the effectiveness and efficiency of our framework.
+\subsection{Our Contributions}
+{\color{Red} MAKE CONTRIBUTION MORE DETAIL.}
+
+\begin{enumerate}
+  \item We propose LSHTS, a fast time series similarity search framework using locality sensitive hashing.
+  
+  \item LSHTS combines both the UCR suit strategies (early abandoning strategies, lower bound, indexing, computation-reuse) and locality sensitive hashing schema to make time series searching much faster.
+  
+  \item The experimental result on two real world large data set (million level) shows the effectiveness and efficiency of our framework.
+\end{enumerate}
+
+
 
 \section{Background}
 Show the background of our method.
