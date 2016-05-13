@@ -20,11 +20,16 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
-\usepackage[]{algorithm2e}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 \usepackage[usenames, dvipsnames]{color}
+\usepackage{amsmath}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
 
 \title{LSHTS:~A Fast Time Series Similarity Search Framework using Locality Sensitive Hashing}
 
@@ -117,8 +122,6 @@ In LSHTS, we combine both the UCR suit strategies (early abandoning strategies, 
   \item The experimental result on two real world large data set (million level) shows the effectiveness and efficiency of our framework.
 \end{enumerate}
 
-
-
 \section{Background}
 Show the background of our method.
 
@@ -135,14 +138,17 @@ In this paper, we interested in the problem of time series similarity search pro
 \begin{definition}[Top $1$ Similarity Search]
 Given a data set $\{X_i|0<i<N-1\}$, where $N$ denotes the size of this data set. Given a query time series $X_q$, the top $1$ similarity search is to find the a time series $X^* \in D$, where
 
-\[
+\begin{equation}
+\label{knn}
 X^* = \arg \max_{X \in D} S(X_q,X)
-\]
+\end{equation}
+
+
 where $S(X,Y)$ denote the similarity between time series $X$ and $Y$. We introduce the similarity measures in Section \ref{relatedwork}. In this work, we are more interested in the problem of top-k similarity search problem, which is finding the top $k$ most similar time series to $X_q$ in $D$. It is pointed out that, the size $N$ of data set $D$ often huge (i.e. million level). And in this paper, our aim is to do fast searching top $k$ time series.
 
 \end{definition}
 
-\subsection{Related Works}
+\section{Related Works}
 \label{relatedwork}
 
 First paragraph introduce the similarity between time series data.
@@ -154,7 +160,11 @@ Third paragraph introduce the LSH methods.
 
 
 \section{LSHTS Framework}
-In this section, we introduce the LSHTS framework in details. Our framework two steps. First step is to transfer a time series into a set using sliding and n-gram.
+
+In this section, we introduce LSHTS framework for fast similarity search in time series data \ref{knn}. 
+
+
+. Our framework two steps. First step is to transfer a time series into a set using sliding and n-gram.
 Then using weghted min-hash to do fast nearest neighbor search.
 
 \subsection {Time Series sliding}
@@ -163,60 +173,125 @@ Then using weghted min-hash to do fast nearest neighbor search.
 
 \subsection {Weighted Minhash}
 
-\begin{algorithm}[h]
-	\KwData{Vector $x$, and random seed[][]}
-	\KwResult{Hash Pairs}
-	initialization $i=0$\;
-	\For{$i$ to k}{
-		\For{Iteration over $x_i$}
-		{
-			random seeds = seed[i][j]\;
-			sample $r_{i,j}$ and $c_{i,j}$ \~ Gamma(2,1)\;
-			sample $\beta_{i,j}$ \~ Gamma(0,1)\;
-			$t_j=|\frac{\log x_i}{r_{i,j}}+\beta_{i,j}|$\;
-			$y_i=exp(r_{i,j}(t_j-beta_{i,j}))$\;
-			$z_j=y_i*exp(r_{i,j})$\;
-			$a_j=c_{i,j}/z_j$
-			
-		}
-		$K^* = \arg\min_ja_i$\;
-		HashPairs[i]=($k^*,t_k^*$)
-	}
-	\caption{Weighted Minhash (CWS)}
+\begin{algorithm}
+\caption{My algorithm}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{MyProcedure}{}
+\State $\textit{stringlen} \gets \text{length of }\textit{string}$
+\State $i \gets \textit{patlen}$
+\BState \emph{top}:
+\If {$i > \textit{stringlen}$} \Return false
+\EndIf
+\State $j \gets \textit{patlen}$
+\BState \emph{loop}:
+\If {$\textit{string}(i) = \textit{path}(j)$}
+\State $j \gets j-1$.
+\State $i \gets i-1$.
+\State \textbf{goto} \emph{loop}.
+\State \textbf{close};
+\EndIf
+\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
+\State \textbf{goto} \emph{top}.
+\EndProcedure
+\end{algorithmic}
 \end{algorithm}
+
+%\begin{algorithm}[h]
+%	\KwData{Vector $x$, and random seed[][]}
+%	\KwResult{Hash Pairs}
+%	initialization $i=0$\;
+%	\For{$i$ to k}{
+%		\For{Iteration over $x_i$}
+%		{
+%			random seeds = seed[i][j]\;
+%			sample $r_{i,j}$ and $c_{i,j}$ \~ Gamma(2,1)\;
+%			sample $\beta_{i,j}$ \~ Gamma(0,1)\;
+%			$t_j=|\frac{\log x_i}{r_{i,j}}+\beta_{i,j}|$\;
+%			$y_i=exp(r_{i,j}(t_j-beta_{i,j}))$\;
+%			$z_j=y_i*exp(r_{i,j})$\;
+%			$a_j=c_{i,j}/z_j$
+%			
+%		}
+%		$K^* = \arg\min_ja_i$\;
+%		HashPairs[i]=($k^*,t_k^*$)
+%	}
+%	\caption{Weighted Minhash (CWS)}
+%\end{algorithm}
 
 For more details of this algorithm, please refer to paper. \cite{ioffe2010improved}. 
 
 \subsection{Overall Framework}
 
-\section{Evaluation}
+\section{Experiment}
+In this section, test our framework on two different type of dataset. Our experiments aims to address the following three questions:
+\begin{enumerate}
+  \item [RQ1:] How accuracy does LSHTS do compared with the exact search result. 
+  \item [RQ2:] How efficient can LSHTS achieve.
+\end{enumerate}
 
 \subsection{Dataset}
 
-%\begin{figure}[h]
-%  \centering
-%  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-%  \caption{Sample figure caption.}
-%\end{figure}
-%
-%\subsection{Tables}
-%
-%\begin{table}[t]
-%  \caption{Sample table title}
-%  \label{sample-table}
-%  \centering
-%  \begin{tabular}{lll}
-%    \toprule
-%    \multicolumn{2}{c}{Part}                   \\
-%    \cmidrule{1-2}
-%    Name     & Description     & Size ($\mu$m) \\
-%    \midrule
-%    Dendrite & Input terminal  & $\sim$100     \\
-%    Axon     & Output terminal & $\sim$10      \\
-%    Soma     & Cell body       & up to $10^6$  \\
-%    \bottomrule
-%  \end{tabular}
-%\end{table}
+In order to test both the effective and efficiency of our algorithm, we choose two large time series data used in \cite{rakthanmanon2012searching}: Random Walk, and one Day ECG \footnote{http://www.cs.ucr.edu/~eamonn/UCRsuite.html}.
+
+Random Walks models the similarity search schema very well, it often used for testing the similarity search methods \cite{rakthanmanon2012searching}. 
+In this paper, we use the random walks data set provided by UCR suite. This data set contains $20$ million data point. In \cite{rakthanmanon2012searching}, the authors searches the all the sub-sequence of the time series. So, in this paper, we transfer this data set into a time series similarity search data set. We generate all the sub-series in that data set, then the final data set consist $20$ million time series.
+
+The second data set we use is the 22 hours and 23 minutes of ECG data (20,140,000 datapoints) together with the exact query. This data set also comes from the UCR suite time series data set. The same as Random walks data set, we generate all the sub-series for this (20,140,000 datapoints time series), and search all the sub-series.
+
+\subsection{Effectiveness Study}
+In this section, we test LSHTS in terms of accuracy compared with the exact search result obtained by DTW distance.
+
+The result is showed bellow:
+
+\begin{table}[t]
+  \caption{Top k search accuracy on ECG data set}
+  \label{accuracy_ecg}
+  \centering
+  \begin{tabular}{lllll}
+    \toprule
+    Time Series Length     & 128     & 512  & 1024  & 2048\\
+    \midrule
+    Top@5 & 100\%  & 100\% & 100\% & 100\%     \\
+    Top@10 & 90\%  & 100\% & 100\% & 100\%     \\
+    Top@20 & 95\%  & 90\% & 95\% & 95\%     \\
+    Top@20 & 90\%  & 88\% & 92\% & 94\%     \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[t]
+  \caption{Top k search accuracy on random walk data set}
+  \label{accuracy_random}
+  \centering
+  \begin{tabular}{lllll}
+    \toprule
+    Time Series Length     & 128     & 512  & 1024  & 2048\\
+    \midrule
+    Top@5 & 100\%  & 100\% & 100\% & 100\%     \\
+    Top@10 & 100\%  & 100\% & 100\% & 100\%     \\
+    Top@20 & 95\%  & 95\% & 90\% & 95\%     \\
+    Top@20 & 88\%  & 88\% & 90\% & 92\%     \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Efficiency Study}
+
+In this section, we introduce the experiment result in terms of running time compared with the UCR suite methods. This result is showed in Table. \ref{time}
+
+\begin{table}[t]
+  \caption{CPU Execution time for different methods}
+  \label{time}
+  \centering
+  \begin{tabular}{lllll}
+    \toprule
+    Time Series Length     & 128     & 512  & 1024  & 2048\\
+    \midrule
+    Exact Search (UCR Suite) & 100\%  & 100\% & 100\% & 100\%     \\
+    LSHTS & 100\%  & 100\% & 100\% & 100\%     \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsubsection*{Acknowledgments}
 
