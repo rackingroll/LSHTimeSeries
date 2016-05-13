@@ -277,18 +277,32 @@ The result is showed bellow:
 
 \subsection{Efficiency Study}
 
-In this section, we introduce the experiment result in terms of running time compared with the UCR suite methods. This result is showed in Table. \ref{time}
+In this section, we introduce the experiment result in terms of running time compared with the UCR suite methods. This result is showed in Table. \ref{time_ecg}, and Table \ref{time_random}.
 
 \begin{table}[t]
-  \caption{CPU Execution time for different methods}
-  \label{time}
+  \caption{CPU Execution time for different methods (Second)}
+  \label{time_ecg}
   \centering
   \begin{tabular}{lllll}
     \toprule
     Time Series Length     & 128     & 512  & 1024  & 2048\\
     \midrule
-    Exact Search (UCR Suite) & 100\%  & 100\% & 100\% & 100\%     \\
-    LSHTS & 100\%  & 100\% & 100\% & 100\%     \\
+    Exact Search (UCR Suite) & 2.30024  & 5.50103 & 39.578 & 339.57     \\
+    LSHTS &  7.90036  & 20.2823 &  309.578 & 7934.615     \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[t]
+  \caption{CPU Execution time for different methods (Second)}
+  \label{time_random}
+  \centering
+  \begin{tabular}{lllll}
+    \toprule
+    Time Series Length     & 128     & 512  & 1024  & 2048\\
+    \midrule
+    Exact Search (UCR Suite) & 1.21002  & 3.20156 & 15.2061 & 216.48035     \\
+    LSHTS &  3.32005  & 42.12  &  297.652 & 1934.615     \\
     \bottomrule
   \end{tabular}
 \end{table}
